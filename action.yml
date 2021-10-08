@@ -1,0 +1,19 @@
+name: 'Build Java Action'
+description: 'Github action to build java apps'
+author: 'Raditya Saskara'
+
+inputs: 
+  GITHUB_TOKEN:
+    description: 'Github Token'
+    required: true
+
+outputs:
+  running:
+    description: 'Boolean value indicating if the action was running'
+
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+branding:
+  color: 'gray-dark'
+  icon: 'clock'
