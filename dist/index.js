@@ -8444,19 +8444,9 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(2619)
 const github = __nccwpck_require__(4637)
 
-const contentDir = core.getInput('content_directory', { default: '' })
 const octokit = github.getOctokit('GITHUB_TOKEN')
 
-const run = async () => {
-  const { context = {} } = github
-  const { pull_request } = context.payload
-
-  await octokit.issues.createComment({
-    ...context.repo,
-    issue_number: pull_request.number,
-    body: 'Thank you for creating a pull request',
-  })
-}
+const run = async () => {}
 
 run()
 
