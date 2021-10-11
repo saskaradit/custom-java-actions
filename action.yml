@@ -2,6 +2,19 @@ name: "Build Java Application"
 description: "Github action to build java apps"
 author: "Raditya Saskara"
 
+inputs:
+  java-version:  
+    description: 'java version'
+    default: '11'
+  app-version:
+    description: 'apps version'
+    required: true
+    default: '1'
+  app-name:
+    description: 'apps version'
+    required: true
+
+
 outputs:
   running:
     description: "Boolean value indicating if the action was running"
@@ -15,5 +28,10 @@ runs:
         java-version: "11"
         distribution: "adopt"
         cache: maven
-    - run: mvn -B package --file pom.xml
+    - run: mvn --batch-mode --update-snapshots verify
       shell: bash
+    - run: mkdir ${{ inputs.app-name }}x${{ inputs.app-version }} && cp target/*.jar ${{ inputs.app-name }}x${{ inputs.app-version }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Package
+        path: ${{ inputs.app-name }}x${{ inputs.app-version }}
