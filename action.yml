@@ -31,6 +31,7 @@ runs:
     - run: mvn --batch-mode --update-snapshots verify
       shell: bash
     - run: mkdir ${{ inputs.app-name }}x${{ inputs.app-version }} && cp target/*.jar ${{ inputs.app-name }}x${{ inputs.app-version }}
+      shell: bash
     - uses: actions/upload-artifact@v2
       with:
         name: Package
