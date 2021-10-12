@@ -30,7 +30,9 @@ runs:
         cache: maven
     - run: mvn --batch-mode --update-snapshots verify
       shell: bash
-    - run: mkdir ${{ inputs.app-name }}x${{ inputs.app-version }} && cp target/*.jar ${{ inputs.app-name }}x${{ inputs.app-version }}
+    - run: mkdir ${{ inputs.app-name }}x${{ inputs.app-version }} && cp target/*.jar ${{ inputs.app-name }}x${{ inputs.app-version }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar
+      shell: bash
+    - run: echo ${{ inputs.app-name }}x${{ inputs.app-version }}
       shell: bash
     - uses: actions/upload-artifact@v2
       with:
