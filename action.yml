@@ -47,7 +47,10 @@ runs:
               echo "FROM openjdk:11-jre-slim \nCOPY ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar /usr/local/lib/ \nEXPOSE 8080 \nENTRYPOINT ["java","-jar","/usr/local/lib/${{ inputs.app-name }}x${{ inputs.app-version }}.jar"]" > Dockerfile
         fi
       shell: bash
-    - run: cat Dockerfile
+    - run: |
+        if echo ${{ inputs.docker-container }} | grep -c "true"
+            then cat Dockerfile
+        fi
       shell: bash
     
     # With Buildah
