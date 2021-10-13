@@ -13,6 +13,9 @@ inputs:
   app-name:
     description: 'apps version'
     required: true
+  docker-container:
+    description: 'create a docker image'
+    default: true
 
 
 outputs:
@@ -30,11 +33,30 @@ runs:
         cache: maven
     - run: mvn --batch-mode --update-snapshots verify
       shell: bash
-    - run: mkdir ${{ inputs.app-name }}x${{ inputs.app-version }} && cp target/*.jar ${{ inputs.app-name }}x${{ inputs.app-version }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar
+    - run: mkdir ${{ inputs.app-name }} && cp target/*.jar ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar
       shell: bash
     - run: echo ${{ inputs.app-name }}x${{ inputs.app-version }}
       shell: bash
     - uses: actions/upload-artifact@v2
       with:
         name: Package
-        path: ${{ inputs.app-name }}x${{ inputs.app-version }}
+        path: ${{ inputs.app-name }}
+    - run: |
+        if echo ${{ inputs.app-name }} | grep -c "true"
+            then
+              echo "FROM openjdk:11-jre-slim \nCOPY ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar /usr/local/lib/ \nEXPOSE 8080 \nENTRYPOINT ["java","-jar","/usr/local/lib/${{ inputs.app-name }}x${{ inputs.app-version }}.jar"]" > Dockerfile
+        fi
+      shell: bash
+    - run: cat Dockerfile
+      shell: bash
+    
+    # With Buildah
+    - uses: redhat-actions/buildah-build@v2
+      with:
+        base-image: docker.io/fabric8/java-alpine-openjdk11-jre
+        image: ${{ inputs.app-name }}
+        tags: ${{ inputs.app-version }}
+        content: ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar
+        image-with-tag: ${{ inputs.app-name }}x${{ inputs.app-version }}
+        entrypoint: java -jar ${{ inputs.app-name }}x${{ inputs.app-version }}.jar
+        port: 8080
