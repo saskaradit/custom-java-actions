@@ -53,12 +53,18 @@ runs:
         fi
       shell: bash
     
-    # With Buildah
-    - uses: redhat-actions/buildah-build@v2
+    # Push to GCR
+    - name: Login to gcloud registry
+      id: gcloud
+      uses: elgohr/gcloud-login-action@master
       with:
-        base-image: docker.io/fabric8/java-alpine-openjdk11-jre
-        image: ${{ inputs.app-name }}
+        account_key: ${{ secrets.GCLOUD_KEY }}
+    - name: Publish to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: ${{ inputs.app-name }}
+        username: ${{ steps.gcloud.outputs.username }}
+        password: ${{ steps.gcloud.outputs.password }}
+        dockerfile: MyDockerFileName
         tags: ${{ inputs.app-version }}
-        content: ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar
-        entrypoint: java -jar ${{ inputs.app-name }}x${{ inputs.app-version }}.jar
-        port: 8080
+        registry: asia.gcr.io/rise-prod-327008
