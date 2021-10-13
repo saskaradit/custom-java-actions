@@ -57,6 +57,5 @@ runs:
         image: ${{ inputs.app-name }}
         tags: ${{ inputs.app-version }}
         content: ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar
-        image-with-tag: ${{ inputs.app-name }}x${{ inputs.app-version }}
         entrypoint: java -jar ${{ inputs.app-name }}x${{ inputs.app-version }}.jar
         port: 8080
