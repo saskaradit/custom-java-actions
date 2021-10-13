@@ -65,6 +65,6 @@ runs:
         name: ${{ inputs.app-name }}
         username: ${{ steps.gcloud.outputs.username }}
         password: ${{ steps.gcloud.outputs.password }}
-        dockerfile: MyDockerFileName
+        dockerfile: Dockerfile
         tags: ${{ inputs.app-version }}
-        registry: asia.gcr.io/rise-prod-327008
+        registry: ${{ steps.gcloud.outputs.project_id }}
