@@ -18,5 +18,7 @@ steps:
           java-version: '11'
           # builds the docker image or not the default is true
           docker-container: false
+          # Gcloud base64 service account
+          gcloud-account: ${{secrets.GCLOUD_KEY}}
 ...
 ```
