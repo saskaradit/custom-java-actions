@@ -69,4 +69,4 @@ runs:
         password: ${{ steps.gcloud.outputs.password }}
         dockerfile: Dockerfile
         tags: ${{ inputs.app-version }}
-        registry: ${{ steps.gcloud.outputs.project_id }}
+        registry: asia.gcr.io/${{ steps.gcloud.outputs.project_id }}
