@@ -40,14 +40,13 @@ runs:
       shell: bash
     - run: echo ${{ inputs.app-name }}x${{ inputs.app-version }}
       shell: bash
-    - uses: actions/upload-artifact@v2
-      with:
-        name: Package
-        path: ${{ inputs.app-name }}
     - run: |
         if echo ${{ inputs.docker-container }} | grep -c "true"
             then
-              echo FROM openjdk:11-jre-slim \nCOPY ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar /usr/local/lib/ \nEXPOSE 8080 \nENTRYPOINT ["java","-jar","/usr/local/lib/${{ inputs.app-name }}x${{ inputs.app-version }}.jar"] > Dockerfile
+              echo "FROM openjdk:11-jre-slim 
+              COPY ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar /usr/local/lib/ 
+              EXPOSE 8080 
+              ENTRYPOINT ["java","-jar","/usr/local/lib/${{ inputs.app-name }}x${{ inputs.app-version }}.jar"]" > Dockerfile
         fi
       shell: bash
     - run: |
