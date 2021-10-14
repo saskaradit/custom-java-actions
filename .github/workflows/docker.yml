@@ -18,10 +18,9 @@ on:
       docker-container:
         description: 'create a docker image'
         default: true
-      gcloud-account:
-        description: 'gcloud project'
+    secrets:
+      gcloud-key:
         required: true
-
 
 
 outputs:
@@ -65,7 +64,7 @@ jobs:
         id: gcloud
         uses: elgohr/gcloud-login-action@master
         with:
-          account_key: ${{ inputs.gcloud-account }}
+          account_key: ${{ secrets.gcloud-key }}
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
