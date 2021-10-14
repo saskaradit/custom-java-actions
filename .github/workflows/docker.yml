@@ -23,11 +23,6 @@ on:
       gcloud-key:
         required: true
 
-
-outputs:
-  running:
-    description: "Boolean value indicating if the action was running"
-
 jobs:
   build_job:
     name: Build java
