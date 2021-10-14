@@ -4,16 +4,20 @@ on:
     inputs:
       java-version:  
         description: 'java version'
+        type: string
         default: '11'
       app-version:
         description: 'apps version'
+        type: string
         required: true
         default: '1'
       app-name:
         description: 'apps version'
+        type: string
         required: true
       docker-container:
         description: 'create a docker image'
+        type: boolean
         default: true
     secrets:
       gcloud-key:
