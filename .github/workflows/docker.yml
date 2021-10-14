@@ -15,10 +15,6 @@ on:
         description: 'apps version'
         type: string
         required: true
-      docker-container:
-        description: 'create a docker image'
-        type: boolean
-        default: true
     secrets:
       gcloud-key:
         required: true
@@ -41,18 +37,13 @@ jobs:
       - run: echo ${{ inputs.app-name }}x${{ inputs.app-version }}
         shell: bash
       - run: |
-          if echo ${{ inputs.docker-container }} | grep -c "true"
-              then
-                echo "FROM openjdk:11-jre-slim 
-                COPY ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar /usr/local/lib/ 
-                EXPOSE 8080 
-                ENTRYPOINT ["java","-jar","/usr/local/lib/${{ inputs.app-name }}x${{ inputs.app-version }}.jar"]" > Dockerfile
-          fi
+          echo "FROM openjdk:11-jre-slim 
+          COPY ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar /usr/local/lib/ 
+          EXPOSE 8080 
+          ENTRYPOINT ["java","-jar","/usr/local/lib/${{ inputs.app-name }}x${{ inputs.app-version }}.jar"]" > Dockerfile
         shell: bash
       - run: |
-          if echo ${{ inputs.docker-container }} | grep -c "true"
-              then cat Dockerfile
-          fi
+          cat Dockerfile
         shell: bash
       
       # Push to GCR
