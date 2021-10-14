@@ -59,16 +59,16 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             echo "[Unit]
-Description=Manage Java service
+            Description=Manage Java service
 
-[Service]
-WorkingDirectory=/opt/prod
-ExecStart=/bin/java -Xms${{inputs.xms}} -Xmx${{inputs.xms}} -jar ${{ inputs.app-name }}x${{ inputs.app-version }}.jar
-User=jvmapps
-Type=simple
-Restart=on-failure
-RestartSec=10
+            [Service]
+            WorkingDirectory=/opt/prod
+            ExecStart=/bin/java -Xms${{inputs.xms}} -Xmx${{inputs.xms}} -jar ${{ inputs.app-name }}x${{ inputs.app-version }}.jar
+            User=jvmapps
+            Type=simple
+            Restart=on-failure
+            RestartSec=10
 
-[Install]
-WantedBy=multi-user.target" > /etc/systemd/system/${{inputs.app-name}}.service
+            [Install]
+            WantedBy=multi-user.target" > /etc/systemd/system/${{inputs.app-name}}.service
             systemctl daemon-reload && systemctl start ${{inputs.app-name}}.service
