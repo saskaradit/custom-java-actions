@@ -1,7 +1,4 @@
 name: "Build Java Application"
-description: "Github action to build java apps"
-author: "Raditya Saskara"
-
 on:
   workflow_call:
     inputs:
