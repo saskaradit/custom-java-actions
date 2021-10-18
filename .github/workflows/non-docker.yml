@@ -51,6 +51,10 @@ jobs:
         shell: bash
       - run: echo ${{ inputs.app-name }}x${{ inputs.app-version }}
         shell: bash
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Package
+          path: ${{ inputs.app-name }}
       - uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}

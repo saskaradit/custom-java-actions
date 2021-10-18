@@ -36,6 +36,10 @@ jobs:
         shell: bash
       - run: echo ${{ inputs.app-name }}x${{ inputs.app-version }}
         shell: bash
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Package
+          path: ${{ inputs.app-name }}
       - run: |
           echo "FROM openjdk:11-jre-slim 
           COPY ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar /usr/local/lib/ 
