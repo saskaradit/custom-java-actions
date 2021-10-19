@@ -8,7 +8,7 @@ Uses the tags for specific purposes or the master if you want the latest.
 ``` yml
 ...
 steps:
-  - uses: saskaradit/custom-java-actions@master
+  - uses: saskaradit/custom-java-actions/.github/workflows/docker.yml@act
     with:
       # App name
       app-name: 'test-app'
