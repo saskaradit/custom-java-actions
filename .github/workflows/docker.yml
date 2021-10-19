@@ -6,6 +6,7 @@ on:
         description: 'java version'
         type: string
         default: '11'
+        required: false
       app-version:
         description: 'apps version'
         type: string
@@ -15,8 +16,30 @@ on:
         description: 'apps version'
         type: string
         required: true
+      nfs-server-path:
+        description: 'nfs path for app'
+        type: string
+        required: true
+      nfs-mount-path:
+        description: 'nfs mount path for app'
+        type: string
+        required: true
+      xms:
+        description: 'java xms'
+        type: string
+        default: "128m"
+        required: true
+      xmx:
+        description: 'java xmx'
+        default: "256m"
+        type: string
+        required: true
     secrets:
       gcloud-key:
+        required: true
+      host:
+        required: true
+      username:
         required: true
 
 jobs:
@@ -32,9 +55,7 @@ jobs:
           cache: maven
       - run: mvn --batch-mode --update-snapshots verify
         shell: bash
-      - run: mkdir ${{ inputs.app-name }} && cp target/*.jar ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar
-        shell: bash
-      - run: echo ${{ inputs.app-name }}x${{ inputs.app-version }}
+      - run: mkdir ${{ inputs.app-name }} && cp target/*.jar ${{ inputs.app-name }}/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar
         shell: bash
       - uses: actions/upload-artifact@v2
         with:
@@ -42,9 +63,13 @@ jobs:
           path: ${{ inputs.app-name }}
       - run: |
           echo "FROM openjdk:11-jre-slim 
-          COPY ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar /usr/local/lib/ 
+          RUN mkdir -p /app/config /app/${{inputs.nfs-mount-path}}
+          COPY ${{ inputs.app-name }}/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar /app
+          COPY properties/application.properties /app/config
+          RUN chown -R 3002. /app
+          USER 3002
           EXPOSE 8080 
-          ENTRYPOINT ["java","-jar","/usr/local/lib/${{ inputs.app-name }}x${{ inputs.app-version }}.jar"]" > Dockerfile
+          ENTRYPOINT ["java","-server","-Xms${{inputs.xms}}", "-Xmx${{inputs.xmx}}","-jar","/app/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar","-Dspring.config.location=/app/config/application.properties"]" > Dockerfile
         shell: bash
       - run: |
           cat Dockerfile
@@ -65,3 +90,12 @@ jobs:
           dockerfile: Dockerfile
           tags: ${{ inputs.app-version }}
           registry: asia.gcr.io/rise-prod-327008
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          script: |
+            docker run \
+            --volume-driver=nfs \
+            -v ${{ inputs.nfs-server-path }}:${{ inputs.nfs-mount-path }}\
+            asia.gcr.io/rise-prod-327008/${{ inputs.app-name }}:${{ inputs.app-version }}

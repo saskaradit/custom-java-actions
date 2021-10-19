@@ -13,12 +13,21 @@ steps:
           # App name
           app-name: 'test-app'
           # Version of the app
-          app-version: '11'
+          app-version: '1.1'
           # Version of the java JDK, default is 11
           java-version: '11'
-          # builds the docker image or not the default is true
-          docker-container: false
+          # NFS Path on its nfs
+          nfs-server-path: /path/on/nfs
+          # Path to mount nfs on the server
+          nfs-mount-path: /path/on/server
+          #Java xms and xms Default is as written
+          xms: '256m'
+          xmx: '256m'
           # Gcloud base64 service account
-          gcloud-account: ${{secrets.GCLOUD_KEY}}
+          gcloud-key: ${{secrets.GCLOUD_KEY}}
+          # Server hostname
+          host: 'host-name.lokal'
+          # Server username
+          username: 'linux'
 ...
 ```

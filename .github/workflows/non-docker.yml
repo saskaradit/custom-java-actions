@@ -6,6 +6,7 @@ on:
         description: 'java version'
         type: string
         default: '11'
+        required: false
       app-version:
         description: 'apps version'
         type: string
@@ -47,9 +48,9 @@ jobs:
           cache: maven
       - run: mvn --batch-mode --update-snapshots verify
         shell: bash
-      - run: mkdir ${{ inputs.app-name }} && cp target/*.jar ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar
+      - run: mkdir ${{ inputs.app-name }} && cp target/*.jar ${{ inputs.app-name }}/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar
         shell: bash
-      - run: echo ${{ inputs.app-name }}x${{ inputs.app-version }}
+      - run: echo ${{ inputs.app-name }}-v${{ inputs.app-version }}
         shell: bash
       - uses: actions/upload-artifact@v2
         with:
@@ -67,7 +68,7 @@ jobs:
 
             [Service]
             WorkingDirectory=/opt/prod
-            ExecStart=/bin/java -Xms${{inputs.xms}} -Xmx${{inputs.xms}} -jar ${{ inputs.app-name }}x${{ inputs.app-version }}.jar
+            ExecStart=/bin/java -Xms${{inputs.xms}} -Xmx${{inputs.xms}} -jar ${{ inputs.app-name }}-v${{ inputs.app-version }}.jar
             User=jvmapps
             Type=simple
             Restart=on-failure
