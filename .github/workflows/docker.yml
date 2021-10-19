@@ -63,7 +63,7 @@ jobs:
           path: ${{ inputs.app-name }}
       - run: |
           echo "FROM openjdk:11-jre-slim 
-          RUN mkdir -p /app/config /app/${{inputs.nfs-mount-path}}
+          RUN mkdir -p /app/config ${{inputs.nfs-mount-path}}
           COPY ${{ inputs.app-name }}/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar /app
           COPY properties/application.properties /app/config
           RUN chown -R 3002. /app

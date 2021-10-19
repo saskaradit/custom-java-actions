@@ -23,11 +23,12 @@ steps:
       #Java xms and xms Default is as written
       xms: '256m'
       xmx: '256m'
+    secrets:
       # Gcloud base64 service account
       gcloud-key: ${{secrets.GCLOUD_KEY}}
       # Server hostname
-      host: 'host-name.lokal'
+      host: ${{secrets.HOST}}
       # Server username
-      username: 'linux'
+      username: ${{secrets.USERNAME}}
 ...
 ```
