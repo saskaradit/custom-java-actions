@@ -41,24 +41,3 @@ runs:
       with:
         name: Package
         path: ${{ inputs.app-name }}
-    - run: |
-        if echo ${{ inputs.docker-container }} | grep -c "true"
-            then
-              echo "FROM openjdk:11-jre-slim \nCOPY ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar /usr/local/lib/ \nEXPOSE 8080 \nENTRYPOINT ["java","-jar","/usr/local/lib/${{ inputs.app-name }}x${{ inputs.app-version }}.jar"]" > Dockerfile
-        fi
-      shell: bash
-    - run: |
-        if echo ${{ inputs.docker-container }} | grep -c "true"
-            then cat Dockerfile
-        fi
-      shell: bash
-    
-    # With Buildah
-    - uses: redhat-actions/buildah-build@v2
-      with:
-        base-image: docker.io/fabric8/java-alpine-openjdk11-jre
-        image: ${{ inputs.app-name }}
-        tags: ${{ inputs.app-version }}
-        content: ${{ inputs.app-name }}/${{ inputs.app-name }}x${{ inputs.app-version }}.jar
-        entrypoint: java -jar ${{ inputs.app-name }}x${{ inputs.app-version }}.jar
-        port: 8080
