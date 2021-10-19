@@ -34,12 +34,14 @@ on:
         default: "256m"
         type: string
         required: true
-    secrets:
-      gcloud-key:
-        required: true
       host:
+        type: string
         required: true
       username:
+        type: string
+        required: true
+    secrets:
+      gcloud-key:
         required: true
 
 jobs:
@@ -92,8 +94,8 @@ jobs:
           registry: asia.gcr.io/rise-prod-327008
       - uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
+          host: ${{ inputs.HOST }}
+          username: ${{ inputs.USERNAME }}
           script: |
             docker run \
             --volume-driver=nfs \
