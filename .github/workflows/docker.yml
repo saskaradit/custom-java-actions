@@ -24,7 +24,7 @@ on:
         description: 'nfs mount path for app'
         type: string
         required: true
-      maven-param:
+      java-param:
         description: 'maven application param'
         type: string
         required: true
@@ -72,7 +72,7 @@ jobs:
           FROM asia.gcr.io/rise-prod-327008/base/rise-java-11:v.0.0.1
           COPY ${{ inputs.app-name }}/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar /app
           COPY properties/application.properties /app/config
-          ENV APPLICATION_PARAM="${{inputs.maven-param}}"
+          ENV APPLICATION_PARAM="${{inputs.java-param}}"
           EOF
         shell: bash
       - run: |
