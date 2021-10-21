@@ -24,23 +24,23 @@ on:
         description: 'nfs mount path for app'
         type: string
         required: true
-      xms:
-        description: 'java xms'
-        type: string
-        default: "128m"
-        required: true
-      xmx:
-        description: 'java xmx'
-        default: "256m"
+      maven-param:
+        description: 'maven application param'
         type: string
         required: true
       host:
         type: string
         required: true
-      username:
+      container_port:
         type: string
         required: true
+      container_node_port:
+        type: string
+        required: true
+     
     secrets:
+      ansible-private-key:
+        required: true
       gcloud-key:
         required: true
 
@@ -55,6 +55,10 @@ jobs:
           java-version: "11"
           distribution: "adopt"
           cache: maven
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.2
+        with:
+          maven-version: 3.8.2
       - run: mvn --batch-mode --update-snapshots verify
         shell: bash
       - run: mkdir ${{ inputs.app-name }} && cp target/*.jar ${{ inputs.app-name }}/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar
@@ -64,40 +68,37 @@ jobs:
           name: Package
           path: ${{ inputs.app-name }}
       - run: |
-          echo "FROM openjdk:11-jre-slim 
-          RUN mkdir -p /app/config ${{inputs.nfs-mount-path}}
+          cat << EOF > Dockerfile 
+          FROM asia.gcr.io/rise-prod-327008/base/rise-java-11:v.0.0.1
           COPY ${{ inputs.app-name }}/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar /app
           COPY properties/application.properties /app/config
-          RUN chown -R 3002. /app
-          USER 3002
-          EXPOSE 8080 
-          ENTRYPOINT ["java","-server","-Xms${{inputs.xms}}", "-Xmx${{inputs.xmx}}","-jar","/app/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar","-Dspring.config.location=/app/config/application.properties"]" > Dockerfile
+          ENV APPLICATION_PARAM="${{inputs.maven-param}}"
+          EOF
         shell: bash
       - run: |
           cat Dockerfile
         shell: bash
       
       # Push to GCR
-      - name: Login to gcloud registry
-        id: gcloud
-        uses: elgohr/gcloud-login-action@master
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
         with:
-          account_key: ${{ secrets.gcloud-key }}
-      - name: Publish to Registry
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: ${{ inputs.app-name }}
-          username: ${{ steps.gcloud.outputs.username }}
-          password: ${{ steps.gcloud.outputs.password }}
-          dockerfile: Dockerfile
-          tags: ${{ inputs.app-version }}
-          registry: asia.gcr.io/rise-prod-327008
+          project_id: rise-prod-327008
+          service_account_key: ${{ secrets.gcloud-key }}
+          export_default_credentials: true
+      - name: Login and configure gcloud for docker
+        run: gcloud --quiet auth configure-docker
+        shell: bash
+      - name: Build Docker Image
+        run: |
+          docker build -t asia.gcr.io/rise-prod-327008/${{ inputs.app-name }}:${{ inputs.app-version }} . \
+          && docker push asia.gcr.io/rise-prod-327008/${{ inputs.app-name }}:${{ inputs.app-version }}
+        shell: bash
       - uses: appleboy/ssh-action@master
         with:
           host: ${{ inputs.HOST }}
-          username: ${{ inputs.USERNAME }}
+          username: ansible
+          key: ${{ secrets.ansible-private-key }}
           script: |
-            docker run \
-            --volume-driver=nfs \
-            -v ${{ inputs.nfs-server-path }}:${{ inputs.nfs-mount-path }}\
-            asia.gcr.io/rise-prod-327008/${{ inputs.app-name }}:${{ inputs.app-version }}
+            gcloud --quiet auth configure-docker
+            docker run -v ${{ inputs.nfs-server-path }}:${{ inputs.nfs-mount-path }} -d -p "${{ inputs.container_node_port }}:${{ inputs.container_port }}" --name ${{ inputs.app-name }} asia.gcr.io/rise-prod-327008/${{ inputs.app-name }}:${{ inputs.app-version }}
