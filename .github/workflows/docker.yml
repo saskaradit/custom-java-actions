@@ -25,7 +25,7 @@ on:
         type: string
         required: true
       java-param:
-        description: 'maven application param'
+        description: 'java application param'
         type: string
         required: true
       host:

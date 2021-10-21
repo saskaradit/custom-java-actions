@@ -20,9 +20,7 @@ steps:
       nfs-server-path: /path/on/nfs
       # Path to mount nfs on the server
       nfs-mount-path: /path/on/server
-      #Java xms and xms Default is as written
-      xms: '256m'
-      xmx: '256m'
+      java-param: '-Xms=128m -Xmx=256m'
       # Server hostname
       host: ${{secrets.HOST}}
       # Server username
