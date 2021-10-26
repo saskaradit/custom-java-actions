@@ -95,5 +95,5 @@ jobs:
         with:
           repository: saskaradit/rise-asobiba
           path: ./
-      - run: ansible-playbook asobiba.yml --extra-vars '{"node_port"=${{ inputs.container_node_port }}, "container_port"=${{ inputs.container_port }}, "image_name"=${{ inputs.app-name }}, "image_tag"=${{ inputs.app-version }}, "mount_volume"=${{ inputs.nfs-volume-mounts }} }'
+      - run: ansible-playbook asobiba.yml --extra-vars '{"node_port"=${{ inputs.container_node_port }}, "container_port"=${{ inputs.container_port }}, "image_name"=${{ inputs.app-name }}, "image_tag"=${{ inputs.app-version }}, "mount_volume"=[${{ inputs.nfs-volume-mounts }}] }'
         shell: bash
