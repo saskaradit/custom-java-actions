@@ -63,6 +63,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            cat << EOF > /etc/systemd/system/${{inputs.app-name}}.service
             echo "[Unit]
             Description=Manage Java service
 
@@ -75,5 +76,6 @@ jobs:
             RestartSec=10
 
             [Install]
-            WantedBy=multi-user.target" > /etc/systemd/system/${{inputs.app-name}}.service
+            WantedBy=multi-user.target" 
+            EOF
             systemctl daemon-reload && systemctl start ${{inputs.app-name}}.service
