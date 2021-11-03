@@ -14,7 +14,7 @@ on:
 
 jobs:
   build_job:
-    nvame: Test
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - name: Create list of modified files
