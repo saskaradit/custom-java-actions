@@ -14,9 +14,14 @@ on:
 
 jobs:
   build_job:
-    name: Test
+    nvame: Test
     runs-on: ubuntu-latest
     steps:
+      - name: Create list of modified files
+        id: modified_files_list
+        uses: lucaspinheirogit/list-from-string-array-action@v1.4.3
+        with:
+          stringArray: ${{ inputs.volumes }}
       - container:
           image: adocker://nginx:latest
-          volumes: ${{ inputs.volumes }}
+          volumes: ${{ steps.modified_files_list.outputs.stringList }}
