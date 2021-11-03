@@ -97,3 +97,7 @@ jobs:
           path: ./
       - run: ansible-playbook asobiba.yml --extra-vars '{"node_port"=${{ inputs.container_node_port }}, "container_port"=${{ inputs.container_port }}, "image_name"=${{ inputs.app-name }}, "image_tag"=${{ inputs.app-version }}, "mount_volume"=[${{ inputs.nfs-volume-mounts }}] }'
         shell: bash
+      - container:
+          image: asia.gcr.io/rise-prod-327008/${{ inputs.app-name }}:${{ inputs.app-version }}
+          volumes:
+            - ${{ github.workspace }}/.cosmos/.config:/github/home/.cosmos/.config

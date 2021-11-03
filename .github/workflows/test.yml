@@ -1,0 +1,22 @@
+name: "Build Java Application"
+on:
+  workflow_call:
+    inputs:
+      java-version:  
+        description: 'java version'
+        type: string
+        default: '11'
+        required: false
+      volumes:
+        description: 'volumes'
+        type: string
+        required: true
+
+jobs:
+  build_job:
+    name: Test
+    runs-on: ubuntu
+    steps:
+      - container:
+          image: adocker://nginx:latest
+          volumes: ${{ inputs.volumes }}
