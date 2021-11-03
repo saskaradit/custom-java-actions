@@ -15,7 +15,7 @@ on:
 jobs:
   build_job:
     name: Test
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     steps:
       - container:
           image: adocker://nginx:latest
