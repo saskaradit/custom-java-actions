@@ -16,14 +16,8 @@ on:
         description: 'apps version'
         type: string
         required: true
-      xms:
-        description: 'java xms'
-        type: string
-        default: "128m"
-        required: true
-      xmx:
-        description: 'java xmx'
-        default: "256m"
+      java-param:
+        description: 'apps version'
         type: string
         required: true
     secrets:
@@ -56,26 +50,33 @@ jobs:
         with:
           name: Package
           path: ${{ inputs.app-name }}
-      - uses: appleboy/ssh-action@master
+      - name: Checkout tools repo
+        uses: actions/checkout@v2
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            cat << EOF > /etc/systemd/system/${{inputs.app-name}}.service
-            echo "[Unit]
-            Description=Manage Java service
+          repository: saskaradit/rise-asobiba
+          path: ./
+#       - run: ansible-playbook asobiba.yml -i inventory.ini -e '{"node_port":${{ inputs.container_node_port }}, "container_port":${{ inputs.container_port }}, "image_name":${{ inputs.app-name }}, "image_tag":${{ inputs.app-version }}, "mount_volume":${{ inputs.nfs-volume-mounts }} }'
+#         shell: bash
+#       - uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.HOST }}
+#           username: ${{ secrets.USERNAME }}
+#           key: ${{ secrets.KEY }}
+#           port: ${{ secrets.PORT }}
+#           script: |
+#             cat << EOF > /etc/systemd/system/${{inputs.app-name}}.service
+#             echo "[Unit]
+#             Description=Manage Java service
 
-            [Service]
-            WorkingDirectory=/opt/prod
-            ExecStart=/bin/java -Xms${{inputs.xms}} -Xmx${{inputs.xms}} -jar ${{ inputs.app-name }}-v${{ inputs.app-version }}.jar
-            User=jvmapps
-            Type=simple
-            Restart=on-failure
-            RestartSec=10
+#             [Service]
+#             WorkingDirectory=/opt/prod
+#             ExecStart=/bin/java ${{inputs.java-param}} -jar ${{ inputs.app-name }}-v${{ inputs.app-version }}.jar
+#             User=jvmapps
+#             Type=simple
+#             Restart=on-failure
+#             RestartSec=10
 
-            [Install]
-            WantedBy=multi-user.target" 
-            EOF
-            systemctl daemon-reload && systemctl start ${{inputs.app-name}}.service
+#             [Install]
+#             WantedBy=multi-user.target" 
+#             EOF
+#             systemctl daemon-reload && systemctl start ${{inputs.app-name}}.service
