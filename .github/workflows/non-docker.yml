@@ -20,6 +20,9 @@ on:
         description: 'apps version'
         type: string
         required: true
+    secrets:
+      ansible-private-key:
+        required: true
 jobs:
   build_job:
     name: Build java
