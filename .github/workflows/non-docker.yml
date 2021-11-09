@@ -49,5 +49,5 @@ jobs:
         with:
           repository: saskaradit/rise-asobiba
           path: ./
-      - run: ansible-playbook deploy-systemd.yml -i inventory.ini -e '{"app-name":${{ inputs.app-name }}, "app-version":${{ inputs.app-version }}, "java-param":${{inputs.java-param}} }'
+      - run: ansible-playbook deploy-systemd.yml -i inventory.ini -e '{"app_name":${{ inputs.app-name }}, "app_version":${{ inputs.app-version }}, "java_param":${{inputs.java-param}} }'
         shell: bash
