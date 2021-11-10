@@ -36,9 +36,9 @@ jobs:
           cache: maven
       - run: mvn --batch-mode --update-snapshots verify
         shell: bash
-      - run: mkdir ${{ inputs.app-name }} && cp target/*.jar ${{ inputs.app-name }}/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar
+      - run: mkdir -p /opt/${{ inputs.app-name }}/bin && cp target/*.jar /opt/${{ inputs.app-name }}/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar
         shell: bash
-      - run: echo ${{ inputs.app-name }}-v${{ inputs.app-version }}
+      - run: echo /opt/${{ inputs.app-name }}/bin/${{ inputs.app-name }}-v${{ inputs.app-version }}
         shell: bash
       - uses: actions/upload-artifact@v2
         with:
