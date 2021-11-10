@@ -42,7 +42,7 @@ jobs:
         shell: bash
       - uses: actions/upload-artifact@v2
         with:
-          name: Package
+          name: ${{ inputs.app-name }}-v${{ inputs.app-version }}
           path: /tmp/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar
       - name: Checkout tools repo
         uses: actions/checkout@v2
