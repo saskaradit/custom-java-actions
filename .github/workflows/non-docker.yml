@@ -36,14 +36,14 @@ jobs:
           cache: maven
       - run: mvn --batch-mode --update-snapshots verify
         shell: bash
-      - run: mkdir ${{ inputs.app-name }} && cp target/*.jar ${{ inputs.app-name }}/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar
+      - run: cp target/*.jar /tmp/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar
         shell: bash
-      - run: echo ${{ inputs.app-name }}-v${{ inputs.app-version }}
+      - run: echo /tmp/${{ inputs.app-name }}-v${{ inputs.app-version }}
         shell: bash
       - uses: actions/upload-artifact@v2
         with:
           name: Package
-          path: ${{ inputs.app-name }}
+          path: /tmp/${{ inputs.app-name }}-v${{ inputs.app-version }}.jar
       - name: Checkout tools repo
         uses: actions/checkout@v2
         with:
