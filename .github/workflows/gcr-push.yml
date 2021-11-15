@@ -16,27 +16,12 @@ on:
         description: 'apps version'
         type: string
         required: true
-      nfs-volume-mounts:
-        description: 'nfs path for app'
-        type: string
-        required: true
       java-param:
         description: 'java application param'
         type: string
         required: true
-      host:
-        type: string
-        required: true
-      container_port:
-        type: string
-        required: true
-      container_node_port:
-        type: string
-        required: true
      
     secrets:
-      ansible-private-key:
-        required: true
       gcloud-key:
         required: true
 
